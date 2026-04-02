@@ -152,7 +152,8 @@ class FlowGRPOTrainer:
         times = rollout.transition_times[step_indices].view(1, -1).expand(batch_size, train_steps)
         old_log_probs = rollout.log_probs[trajectory_indices][:, step_indices]
         advantages = rollout.advantages[trajectory_indices].view(-1, 1).expand(batch_size, train_steps)
-        terminal_states = rollout.terminal_states[trajectory_indices].unsqueeze(1).expand_as(x_t)
+        terminal_states = rollout.terminal_states[trajectory_indices]
+        anchor_states = self.regularizer.select_anchor_states(trajectory_indices=trajectory_indices, device=states.device)
         return {
             "x_t": x_t.reshape(-1, *x_t.shape[2:]),
             "x_next": x_next.reshape(-1, *x_next.shape[2:]),
@@ -160,7 +161,9 @@ class FlowGRPOTrainer:
             "times": times.reshape(-1),
             "old_log_probs": old_log_probs.reshape(-1),
             "advantages": advantages.reshape(-1),
-            "terminal_states": terminal_states.reshape(-1, *terminal_states.shape[2:]),
+            "terminal_states": terminal_states,
+            "anchor_states": anchor_states,
+            "repeats_per_terminal": train_steps,
         }
 
     def _compute_minibatch_losses(self, batch: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
@@ -209,6 +212,8 @@ class FlowGRPOTrainer:
             times=batch["times"],
             labels=batch["labels"],
             terminal_states=batch["terminal_states"],
+            repeats_per_terminal=int(batch["repeats_per_terminal"]),
+            anchor_states=batch["anchor_states"],
         )
         reg_value = self.regularizer.compute(reg_inputs)
         total_loss = loss_rl + float(getattr(self.regularizer, "weight", 0.0)) * reg_value
@@ -303,6 +308,7 @@ class FlowGRPOTrainer:
         while self.outer_step < total_outer_steps:
             outer_start = time.time()
             rollout, valid_mask = self.collect_rollout()
+            self.regularizer.prepare_rollout(rollout.terminal_states)
             valid_indices = torch.nonzero(valid_mask, as_tuple=False).squeeze(1)
             self.model.train()
             metrics_sum = {

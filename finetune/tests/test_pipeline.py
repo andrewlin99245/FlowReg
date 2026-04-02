@@ -88,7 +88,23 @@ class FineTunePipelineTest(unittest.TestCase):
         batchot = BatchOTRegularizer(weight=1.0, epsilon=0.05, num_iters=5)
         self.assertEqual(float(batchot.compute(inputs)), 0.0)
         batchot.update_reference_batch(terminal)
-        self.assertGreaterEqual(float(batchot.compute(inputs)), 0.0)
+        batchot.prepare_rollout(terminal)
+        prepared_anchors = batchot.select_anchor_states(
+            trajectory_indices=torch.arange(terminal.shape[0]),
+            device=terminal.device,
+        )
+        cached_inputs = RegularizerInputs(
+            predicted_velocity=predicted_velocity,
+            x_t=x_t,
+            times=times,
+            labels=labels,
+            terminal_states=terminal,
+            anchor_states=prepared_anchors,
+        )
+        with mock.patch.object(batchot, "_compute_anchors", wraps=batchot._compute_anchors) as patched:
+            self.assertGreaterEqual(float(batchot.compute(cached_inputs)), 0.0)
+            self.assertGreaterEqual(float(batchot.compute(cached_inputs)), 0.0)
+        self.assertEqual(patched.call_count, 0)
 
     def test_trainer_smoke(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
@@ -104,7 +120,7 @@ class FineTunePipelineTest(unittest.TestCase):
             config["output"]["root"] = str(temp_root / "outputs")
             config["device"] = "cpu"
             config["train"]["mixed_precision"] = False
-            config["train"]["total_outer_steps"] = 1
+            config["train"]["total_outer_steps"] = 2
             config["train"]["log_every"] = 1
             config["train"]["checkpoint_every"] = 1
             config["train"]["eval_every"] = 1
@@ -119,6 +135,9 @@ class FineTunePipelineTest(unittest.TestCase):
             config["eval"]["sample_steps"] = 2
             config["optim"]["warmup_steps"] = 0
             config["reward"]["setting"] = "classifier"
+            config["regularizer"]["type"] = "batchot"
+            config["regularizer"]["lambda_batchot"] = 1.0e-4
+            config["regularizer"]["sinkhorn_iters"] = 4
 
             with mock.patch("trainers.flowgrpo_trainer.build_reward_function", return_value=DummyReward()):
                 with mock.patch.object(FlowGRPOTrainer, "save_sample_grids", autospec=True, return_value=None):

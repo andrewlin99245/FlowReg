@@ -10,5 +10,5 @@ class RFRRegularizer(BaseRegularizer):
 
     def compute(self, inputs: RegularizerInputs) -> torch.Tensor:
         time_view = torch.clamp(1.0 - inputs.times, min=1e-4).view(-1, 1, 1, 1)
-        target = (inputs.terminal_states - inputs.x_t) / time_view
+        target = (inputs.expanded_terminal_states - inputs.x_t) / time_view
         return (inputs.predicted_velocity - target).square().flatten(1).sum(dim=1).mean()
