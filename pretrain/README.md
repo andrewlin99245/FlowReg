@@ -6,11 +6,19 @@ For the full end-to-end workflow, including shared env setup, dataset download, 
 
 ## Environment
 
-This environment file is for local development on the current machine. The codepath is CUDA-compatible; on the actual training machine you should install the matching CUDA-enabled PyTorch build there.
+The checked-in `environment.yml` now matches the shared working env versions used for development on this repo. The codepath is CUDA-compatible; on the actual training machine you should install the matching CUDA-enabled PyTorch build there.
 
 ```bash
 mamba env create -p .conda-env -f environment.yml
 ```
+
+If you want the exact tested dev snapshot from this machine, use the exported lock file instead:
+
+```bash
+mamba env create -p .conda-env -f environment.verified.lock.yml
+```
+
+That lock file is mainly for matching the verified development env on a similar platform. For general CUDA deployment, prefer `environment.yml`.
 
 ## Prepare the dataset
 

@@ -15,5 +15,5 @@ dependencies:
   - pip
   - pip:
       - datasets==4.7.0
-      - huggingface-hub==1.4.1
-      - hf-xet==1.4.0
+      - huggingface-hub==1.8.0
+      - hf-xet==1.4.3

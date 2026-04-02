@@ -7,6 +7,8 @@ pretrain/.torch-cache/
 pretrain/.hf-cache/
 pretrain/.hf_home/
 pretrain/.pip-cache/
+pretrain/.xdg-cache/
+pretrain/.mpl-cache/
 
 pretrain/data/
 pretrain/outputs/
@@ -16,3 +18,4 @@ outputs/
 pretrain/_finetune_stage/
 pretrain/_project_shared_stage/
 pretrain/_root_cleanup_stage/
+pretrain/_env_sync_stage/

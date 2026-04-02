@@ -30,7 +30,7 @@ Flow-GRPO is written for reverse-time denoising trajectories. This code adapts t
 
 ## Environment
 
-Use the same env as pretraining:
+Use the same env as pretraining. The default shared setup path now pins the fine-tune overlay to the exact versions that were loaded successfully in the shared dev env:
 
 ```bash
 cd ../pretrain
@@ -43,6 +43,8 @@ If you want the `classifier_plus_musiq` reward setting, install the extra fine-t
 cd ../finetune
 mamba env update -p ../pretrain/.conda-env -f environment.yml
 ```
+
+If you want the exact exported shared dev snapshot instead, run `../scripts/setup_env.sh --verified-lock` from the repo root. That snapshot is closer to the working local env, but the default pinned env files remain the safer path for a different CUDA machine.
 
 ## Run fine-tuning
 

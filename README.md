@@ -17,6 +17,8 @@ Project-local caches also live under `pretrain/`:
 - `pretrain/.torch-cache`
 - `pretrain/.hf-cache`
 - `pretrain/.pip-cache`
+- `pretrain/.xdg-cache`
+- `pretrain/.mpl-cache`
 
 ## Quick Start
 
@@ -40,8 +42,17 @@ From the repo root:
 
 What it does:
 
-- creates `pretrain/.conda-env` from [pretrain/environment.yml](/Users/andrew/Research/FlowReg/pretrain/environment.yml)
-- updates that same env with [finetune/environment.yml](/Users/andrew/Research/FlowReg/finetune/environment.yml) so MUSIQ support is available
+- creates `pretrain/.conda-env` from [`pretrain/environment.yml`](pretrain/environment.yml)
+- updates that same env with [`finetune/environment.yml`](finetune/environment.yml) so MUSIQ support is available
+- both env files are now pinned to the versions used in the verified shared dev env
+
+If you want the exact exported dev snapshot from the working machine instead of the cross-platform pinned env files:
+
+```bash
+./scripts/setup_env.sh --verified-lock
+```
+
+That uses [`pretrain/environment.verified.lock.yml`](pretrain/environment.verified.lock.yml). It is the closest match to the verified dev env, but it is less portable across OS/arch combinations than the default setup path.
 
 ### 2. Download and prepare the dataset
 
@@ -53,7 +64,7 @@ Default output:
 
 - `pretrain/data/imagenet64_subset50`
 
-You can forward any extra args directly to [prepare_imagenet64_subset.py](/Users/andrew/Research/FlowReg/pretrain/prepare_imagenet64_subset.py), for example:
+You can forward any extra args directly to [`prepare_imagenet64_subset.py`](pretrain/prepare_imagenet64_subset.py), for example:
 
 ```bash
 ./scripts/download_dataset.sh --prepared-root data/imagenet64_subset50 --cache-dir data/hf_cache
@@ -84,7 +95,7 @@ Run pretraining through the shared wrapper:
 ./scripts/run_pretrain.sh --data-root data/imagenet64_subset50 --output-dir outputs/imagenet64_subset50_cfm
 ```
 
-This calls [train_cfm.py](/Users/andrew/Research/FlowReg/pretrain/train_cfm.py) inside `pretrain/`.
+This calls [`train_cfm.py`](pretrain/train_cfm.py) inside `pretrain/`.
 
 ## Fine-Tuning
 
@@ -94,11 +105,11 @@ Run fine-tuning through the shared wrapper:
 ./scripts/run_finetune.sh configs/experiments/rfr_classifier_plus_musiq.yaml
 ```
 
-This calls [train_finetune.py](/Users/andrew/Research/FlowReg/finetune/train_finetune.py) inside `finetune/`.
+This calls [`train_finetune.py`](finetune/train_finetune.py) inside `finetune/`.
 
 ## Class Mapping
 
-The default classifier reward uses the ImageNet-1k classifier probability for the target class, not a separate 50-way classifier head. The mapping is defined once in [dataset.py](/Users/andrew/Research/FlowReg/pretrain/dataset.py) and reused by fine-tuning.
+The default classifier reward uses the ImageNet-1k classifier probability for the target class, not a separate 50-way classifier head. The mapping is defined once in [`dataset.py`](pretrain/dataset.py) and reused by fine-tuning.
 
 Important alias-resolved classes:
 
