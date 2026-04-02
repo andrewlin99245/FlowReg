@@ -1,0 +1,14 @@
+# Overlay dependencies for the shared pretraining env.
+# Apply this to ../pretrain/.conda-env
+# rather than creating a separate fine-tuning env.
+channels:
+  - conda-forge
+dependencies:
+  - pyyaml
+  - numpy
+  - pillow
+  - matplotlib
+  - tqdm
+  - pip
+  - pip:
+      - pyiqa>=0.1.13

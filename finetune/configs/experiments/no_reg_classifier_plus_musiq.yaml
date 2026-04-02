@@ -1,0 +1,5 @@
+base: ../base.yaml
+experiment_name: no_reg_classifier_plus_musiq
+
+reward:
+  setting: classifier_plus_musiq

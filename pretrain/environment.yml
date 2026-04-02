@@ -1,0 +1,19 @@
+name: flowreg-pretrain
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.11.15
+  - pytorch=2.10.0
+  - torchvision=0.25.0
+  - numpy=2.4.3
+  - pillow=12.1.1
+  - matplotlib=3.10.8
+  - tqdm=4.67.3
+  - pyyaml=6.0.3
+  - pytest
+  - pip
+  - pip:
+      - datasets==4.7.0
+      - huggingface-hub==1.4.1
+      - hf-xet==1.4.0

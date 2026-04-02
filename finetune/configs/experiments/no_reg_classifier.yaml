@@ -1,0 +1,8 @@
+base: ../base.yaml
+experiment_name: no_reg_classifier
+
+reward:
+  setting: classifier
+
+regularizer:
+  type: no_reg

@@ -1,0 +1,9 @@
+base: ../base.yaml
+experiment_name: w2_classifier_plus_musiq
+
+reward:
+  setting: classifier_plus_musiq
+
+regularizer:
+  type: w2
+  lambda_w2: 1.0e-4

@@ -1,0 +1,9 @@
+base: ../base.yaml
+experiment_name: rfr_classifier_plus_musiq
+
+reward:
+  setting: classifier_plus_musiq
+
+regularizer:
+  type: rfr
+  lambda_rfr: 1.0e-4

@@ -1,0 +1,74 @@
+experiment_name: base
+device: auto
+
+pretrained:
+  checkpoint_path: ../pretrain/outputs/imagenet64_subset50_cfm/checkpoints/latest.pt
+
+model:
+  image_shape: [3, 64, 64]
+
+output:
+  root: outputs
+
+train:
+  seed: 42
+  total_outer_steps: 1000
+  num_inner_epochs: 1
+  minibatch_size: 32
+  grad_clip: 1.0
+  mixed_precision: true
+  log_every: 10
+  checkpoint_every: 100
+  eval_every: 100
+  resume: ""
+
+optim:
+  lr: 1.0e-5
+  beta1: 0.9
+  beta2: 0.999
+  weight_decay: 0.0
+  warmup_steps: 50
+
+sample:
+  rollout_steps: 10
+  train_steps: 10
+  noise_level: 0.8
+  num_groups_per_outer_step: 8
+  group_size: 8
+
+rl:
+  clip_range: 0.0001
+  beta_kl: 0.0
+  t_eps: 0.001
+  advantage_eps: 0.0001
+  advantage_clip: 5.0
+
+reward:
+  setting: classifier
+  alpha: 1.0
+  beta: 0.1
+  classifier:
+    backend: torchvision
+    checkpoint_path: ""
+    label_space: imagenet1k
+    input_size: 224
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+  musiq:
+    metric_name: musiq
+    checkpoint_path: ""
+    raw_min: 0.0
+    raw_max: 100.0
+
+regularizer:
+  type: no_reg
+  lambda_w2: 0.0
+  lambda_rfr: 0.0
+  lambda_batchot: 0.0
+  sinkhorn_epsilon: 0.05
+  sinkhorn_iters: 50
+
+eval:
+  sample_steps: 100
+  samples_per_class: 16
+  class_ids: []

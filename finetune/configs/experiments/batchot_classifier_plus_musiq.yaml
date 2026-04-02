@@ -1,0 +1,9 @@
+base: ../base.yaml
+experiment_name: batchot_classifier_plus_musiq
+
+reward:
+  setting: classifier_plus_musiq
+
+regularizer:
+  type: batchot
+  lambda_batchot: 1.0e-4

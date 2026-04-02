@@ -1,0 +1,6 @@
+base: ../base.yaml
+experiment_name: rfr_classifier
+
+regularizer:
+  type: rfr
+  lambda_rfr: 1.0e-4

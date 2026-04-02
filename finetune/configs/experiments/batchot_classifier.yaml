@@ -1,0 +1,6 @@
+base: ../base.yaml
+experiment_name: batchot_classifier
+
+regularizer:
+  type: batchot
+  lambda_batchot: 1.0e-4
