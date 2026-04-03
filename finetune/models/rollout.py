@@ -132,7 +132,7 @@ def rollout_sde_with_logprobs(
 
     x_t = states[:, 0]
     for step in range(num_steps):
-        t_value = (step + 0.5) * dt
+        t_value = step * dt
         t = torch.full((batch_size,), t_value, device=device, dtype=torch.float32)
         transition_times[step] = t_value
         log_prob, mean, step_std, _, _ = compute_transition_logprob(

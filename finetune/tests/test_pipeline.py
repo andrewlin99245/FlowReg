@@ -69,6 +69,12 @@ class FineTunePipelineTest(unittest.TestCase):
         self.assertEqual(tuple(rollout.states.shape), (4, 5, 3, 64, 64))
         self.assertEqual(tuple(rollout.log_probs.shape), (4, 4))
         self.assertTrue(torch.isfinite(rollout.log_probs).all().item())
+        self.assertTrue(
+            torch.allclose(
+                rollout.transition_times.cpu(),
+                torch.tensor([0.0, 0.25, 0.5, 0.75], dtype=torch.float32),
+            )
+        )
 
     def test_regularizers(self) -> None:
         predicted_velocity = torch.randn(6, 3, 8, 8)
